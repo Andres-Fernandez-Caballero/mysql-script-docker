@@ -1,0 +1,35 @@
+services:
+  mysql:
+    image: mysql:8.0
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: mydatabase
+      MYSQL_USER: myuser
+      MYSQL_PASSWORD: mypassword
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./database:/docker-entrypoint-initdb.d:ro
+    networks:
+      - base_datos
+  
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin-container
+    environment:
+      PMA_HOST: mysql
+      PMA_USER: myuser
+      PMA_PASSWORD: mypassword
+      PMA_PORT: 3306
+    ports:
+      - "8080:80"
+    networks:
+      - base_datos
+  
+networks:
+  base_datos:
+    driver: bridge
+
+volumes:
+  mysql_data:
